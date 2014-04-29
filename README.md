@@ -1,4 +1,1 @@
-angdrop
-=======
-
-angularjs project
+AngDrop
