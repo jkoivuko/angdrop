@@ -1,0 +1,44 @@
+    <div class="container">
+      <h1>Chat</h1>
+      <section id="messages" class="clearfix">
+        <div class="table-wrapper">
+          <table class="table">
+            <tr ng-repeat="message in messages | keyFilter | orderBy:'$name'">
+              <td class="message-username col-sm-2">
+                <span>{{ message.author }}</span>
+              </td>
+              <td class="message-content col-sm-10">
+                <div class="settings">
+                  <div class="btn-group">
+                    <a ng-click="remove(message.$name)" href="#"><span class="glyphicon glyphicon-trash"></span> Delete</a>
+                  </div>
+                </div>
+                <p>{{ message.content }}</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </section>
+      <form role="form" class="well clearfix" ng-submit="sendMessage()">
+        <div class="row">
+          <div class="col-xs-3">
+            <div class="input-group">
+              <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+              <input ng-model="author" class="input input-lg form-control" placeholder="Your Name">
+            </div>
+          </div>
+          <div class="col-xs-7">
+            <input ng-model="newMessage" ng-disabled="sendingMessage" placeholder="What's up?" class="input input-lg form-control">
+          </div>
+          <div class="col-xs-2">
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Send</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- goAngular Config -->
+    <script>
+      window.connectUrl = "https://goinstant.net/b57a53839217/my-application";
+    </script>
+

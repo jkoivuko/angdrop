@@ -1,6 +1,5 @@
 'use strict';
 
-
 // Declare app level module which depends on filters, and services
 angular.module('angdrop', [
   'ngRoute',
@@ -8,9 +7,13 @@ angular.module('angdrop', [
   'angdrop.services',
   'angdrop.directives',
   'angdrop.controllers',
+  'goangular' //goAngular
 ]).
-config(['$routeProvider', function($routeProvider) {
+config(function($routeProvider, $goConnectionProvider) {
   $routeProvider.when('/index', {templateUrl: 'partials/index.html', controller: 'MyCtrl1'});
   $routeProvider.when('/create', {templateUrl: 'partials/create.html', controller: 'MyCtrl2'});
+  $routeProvider.when('/chat', {templateUrl: 'partials/chat.html',  controller: 'ChatCtrl'});
   $routeProvider.otherwise({redirectTo: '/index'});
-}]);
+
+  $goConnectionProvider.$set('https://goinstant.net/b57a53839217/my-application');
+})
