@@ -10,6 +10,7 @@
     "angular-route": "1.2.x",
     "angular-loader": "1.2.x",
     "angular-mocks": "~1.2.15",
+    "angular-cookies": "1.2.x",
     "goangular": "v3.3.5"
    }
 }

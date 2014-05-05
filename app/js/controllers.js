@@ -6,21 +6,23 @@ angular.module('angdrop.controllers', [])
   .controller('MyCtrl1', [function() {
 
   }]) // location and scope needs to be as parameters 
-  .controller('MyCtrl2', ["$location", "$scope", function($location, $scope) {
+  .controller('MyCtrl2', ["$cookieStore", "$location", "$scope", function($cookieStore, $location, $scope) {
   $scope.username = "test";  
   $scope.dropkey = ""+Math.floor(Math.random()*100000000000);
 
   $scope.create = function(username, hash) {
       alert("creating "+username+hash);
+      $cookieStore.put("username", username);
+      $cookieStore.put("dropkey", hash);
       $location.url("/drop/"+hash);
   }
 
   }])
-  .controller('ChatCtrl', ["$goKey", "$scope", function($goKey, $scope) {
+  .controller('ChatCtrl', ["$cookieStore", "$goKey", "$scope", function($cookieStore, $goKey, $scope) {
 
   // 'chat' is the key for this chat in goInstance db
   $scope.messages = $goKey('chat').$sync();
-  alert($scope.dropkey);
+  alert($cookieStore.get("dropkey"));
 
   $scope.messages.$on('add', {
     local: true,

@@ -7,7 +7,8 @@ angular.module('angdrop', [
   'angdrop.services',
   'angdrop.directives',
   'angdrop.controllers',
-  'goangular' //goAngular
+  'goangular', //goAngular
+  'ngCookies'
 ]).
 config(function($routeProvider, $goConnectionProvider) {
   $routeProvider.when('/index', {templateUrl: 'partials/index.html', controller: 'MyCtrl1'});
