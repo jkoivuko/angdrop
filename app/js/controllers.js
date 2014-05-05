@@ -8,8 +8,8 @@ angular.module('angdrop.controllers', [])
   }]) // location and scope needs to be as parameters 
   .controller('MyCtrl2', ["$goUsers", "$cookieStore", "$location", "$scope", function($goUsers, $cookieStore, $location, $scope) {
 
-  $scope.username = "Guest "+Math.floor(Math.random()*1000);  
-  $scope.dropkey = ""+Math.floor(Math.random()*100000000000);
+  $scope.username = "Guest " + Math.floor(Math.random()*1000);  
+  $scope.dropkey = Math.floor(Math.random()*Math.pow(10,10)).toString();
 
   $scope.create = function(username, dropkey) {
       //alert("creating "+username+dropkey);
@@ -71,18 +71,20 @@ angular.module('angdrop.controllers', [])
   }
 
 }])
-.controller('DropCtrl', ["$cookieStore", "$goKey", "$scope", "$goUsers", "$routeParams", function($cookieStore, $goKey, $scope, $goUsers, $routeParams) {
+.controller('DropCtrl', ["$cookieStore", "$goKey", "$scope", "$goUsers", "$routeParams", 
+  function($cookieStore, $goKey, $scope, $goUsers, $routeParams) {
+  
   // TODO add modal to change Guest name if accessing direct link
   var roomId = $routeParams.dropkey
 
-  alert(roomId);
- 
+  
   $scope.messages = $goKey(roomId).$sync();
 
   // Create a users model and sync it
   $scope.users = $goUsers(roomId).$sync();
 
-  $scope.users.$on('ready', function() {
+  // not needed
+  /*$scope.users.$on('ready', function() {
     // Do something once the user model is synchronized
   });
 
@@ -92,7 +94,7 @@ angular.module('angdrop.controllers', [])
 
   $scope.users.$on('leave', function(user) {
     // Handle a user leaving
-  });
+  });*/
 
 
 }])
