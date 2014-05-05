@@ -7,10 +7,10 @@ angular.module('angdrop', [
   'angdrop.filters',
   'angdrop.services',
   'angdrop.directives',
-  'angdrop.controllers'
+  'angdrop.controllers',
 ]).
 config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/', {templateUrl: 'partials/index.html', controller: 'MyCtrl1'});
+  $routeProvider.when('/index', {templateUrl: 'partials/index.html', controller: 'MyCtrl1'});
   $routeProvider.when('/create', {templateUrl: 'partials/create.html', controller: 'MyCtrl2'});
-  $routeProvider.otherwise({redirectTo: '/'});
+  $routeProvider.otherwise({redirectTo: '/index'});
 }]);

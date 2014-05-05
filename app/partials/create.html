@@ -1,5 +1,19 @@
-<p>This is the partial for view 2.</p>
-<p>
-  Showing of 'interpolate' filter:
-  {{ 'Current version is v%VERSION%.' | interpolate }}
-</p>
+<div>
+<h2>Create new Drop</h2>
+<p>Choose random identifier or click create to create with random one<p>
+
+<form name="myForm">
+    Your Name: <input type="text" name="userName" ng-model="username" required>
+    <span class="error" ng-show="myForm.userName.$error.required">Required!</span><br>
+    Random identifier: <input type="text" name="dropkey" ng-model="dropkey"
+      ng-minlength="3" ng-maxlength="250">
+    <span class="error" ng-show="myForm.dropkey.$error.minlength">
+      Too short!</span>
+    <span class="error" ng-show="myForm.dropkey.$error.maxlength">
+      Too long!</span><br>
+    <button ng-click="create(username, dropkey)">CREATE</button>
+</form>
+
+
+
+</div>
