@@ -1,0 +1,13 @@
+<div>
+<h2>This is your Drop</h2>
+<p>Drag & Drop or Select file to share<p>
+<p>Currently online: </p>
+
+<table class="table">
+<tr ng-repeat="user in users | keyFilter | orderBy:'$displayName'">
+   <td class="message-username col-sm-2">
+      <span>{{ user.displayName }}</span>
+   </td>
+</table>
+
+</div>
