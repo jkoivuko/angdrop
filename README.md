@@ -16,3 +16,8 @@ Notes
 -----
 
 - TODO: Sharing works currently between only with same browser families. 
+
+Links
+-----
+
+- http://goangular.org/
