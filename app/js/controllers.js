@@ -74,16 +74,29 @@ angular.module('angdrop.controllers', [])
 .controller('DropCtrl', ["$cookieStore", "$goKey", "$scope", "$goUsers", "$routeParams", 
   function($cookieStore, $goKey, $scope, $goUsers, $routeParams) {
   
+  
   // TODO add modal to change Guest name if accessing direct link
   var roomId = $routeParams.dropkey
 
+  // PeerJS
+  //var peer = new Peer({key: '8ca5kfjq662sm7vi'});
+  var peer = new Peer(roomId, {key: '8ca5kfjq662sm7vi',
+  config: {'iceServers': [
+    { url: 'stun:stun.l.google.com:19302' },
+    { url: 'turn:homeo@turn.bistri.com:80', credential: 'homeo' }
+  ]} 
+  });
+
+  peer.on('open', function(id) {
+      console.log('My peerjs ID is: ' + id);
+  });
   
   $scope.messages = $goKey(roomId).$sync();
 
   // Create a users model and sync it
   $scope.users = $goUsers(roomId).$sync();
 
-  // not needed
+  // not needed atm
   /*$scope.users.$on('ready', function() {
     // Do something once the user model is synchronized
   });
