@@ -77,60 +77,162 @@ angular.module('angdrop.controllers', [])
   
   // TODO add modal to change Guest name if accessing direct link
   // use: https://github.com/tuhoojabotti/AngularJS-ohjelmointiprojekti-k2014/blob/master/material/aloitusluento.md#flash
-  var roomId = $routeParams.dropkey
+  var roomId = $routeParams.dropkey;
 
   $scope.messages = $goKey(roomId).$sync();
 
-  // Create a users model and sync it
-  $scope.users = $goUsers(roomId).$sync();
+  $scope.users = $goUsers(roomId);
   $scope.users.$self();
 
-
+  // add peerjs address
   var peer;
- 
+  var activeConnections = {};
+  
+  peer = new Peer([], {key: '8ca5kfjq662sm7vi',
+     config: {'iceServers': [
+        { url: 'stun:stun.l.google.com:19302' },
+        { url: 'turn:homeo@turn.bistri.com:80', credential: 'homeo' }
+     ]}
+    });
+
+    var peerjs;
+
+    console.log("starting peer connection");
+    peer.on('open', function(id) {
+       console.log('My peerjs ID is: ' + id);
+       peerjs = id;
+    });
+    peer.on('error', function(err) {
+       console.log(err)
+   });
+  
+  $scope.users.$sync();
+
+
+  // sync ready
   $scope.users.$on('ready', function() {
 
-   console.log("sync ready users");
-
-   // TODO currently goInstant will give id {guest: xxxxxx} value.
-   var selfid = $scope.users.$local.$key('id').guest;
-
-   console.log("selfid "+selfid);
-   peer = new Peer(selfid, {key: '8ca5kfjq662sm7vi',
-      config: {'iceServers': [
-         { url: 'stun:stun.l.google.com:19302' },
-         { url: 'turn:homeo@turn.bistri.com:80', credential: 'homeo' }
-      ]}
-   });
-
-   console.log("staring peer connection");
-   peer.on('open', function(id) {
-      console.log('My peerjs ID is: ' + id);
-      $scope.users.$local.$key('peerjs_addr').$set(id);
-   });
-   peer.on('error', function(err) {
-     console.log(err)
-   });
+    console.log("sync ready users" + $scope.users.$local.displayName);
+    $scope.users.$local.$key('peerjsaddr').$set(peerjs);
+    $scope.users.$local.$sync();
 
 
   });
 
 
   $scope.users.$on('join', function(user) {
-     console.log("user joined with name, "+user.displayName);
+     //$scope.users.$sync();
+     //$scope.users.$on('ready', function() {
 
-     // TODO figure out why this is not showing up?
-     console.log("user joined with peerjs addr, "+user.peerjs_addr);
+       console.log("user joined with name, "+user.displayName);
 
-     // again, we are using latter part of the goInstant id
-     // for not authenticated users. if user is authenticated, this will not work
-     peer.connect(user.id.guest, { label: 'file', reliable: true });
+       // TODO figure out why this is not showing up?
+       console.log("user joined with peerjs addr, "+user.peerjsaddr);
+
+       console.log("user joined with user.id "+user.id);
+     //});
+
+
   });
+
+
+ $scope.createConnections = function() {
+     var peer_address = $scope.peer_address;
+     console.log("connecting to "+$scope.peer_address);
+
+     var f = peer.connect($scope.peer_address, { label: 'file', reliable: true });
+
+     f.on('open', function() {
+       console.log("connecting....");
+        peer_connect(f); // ?
+      });
+     f.on('error', function(err) { alert(err); });
+
+     activeConnections[peer_address] = 1;
+
+  };
 
   $scope.users.$on('leave', function(user) {
     // Handle a user leaving
+    delete activeConnections[user.id.guest];
+    
   });
 
+  var peer_connect = function (c) {
+    if (c.label === 'file') {
+      c.on('data', function(data) {
+        console.log("you are getting file");
+        // If we're getting a file, create a URL for it.
+        if (data.constructor === ArrayBuffer) {
+          var dataView = new Uint8Array(data);
+          var dataBlob = new Blob([dataView]);
+          var url = window.URL.createObjectURL(dataBlob);
+          angular.element('#box').append('<div><span class="file">' + c.peer + ' has sent you a <a target="_blank" href="' + url + '">file</a>.</span></div>');
+        }
+      });
+    }
+   //connectedPeers[c.peer] = 1;
+  }
+
+  // Await connections from others
+  peer.on('connection', peer_connect);
+
+  
+  // Prepare file drop box.
+  var box = angular.element('#box');
+  box.on('dragenter', doNothing);
+  box.on('dragover', doNothing);
+  box.on('drop', function(e){
+    console.log("file dropped");
+    e.originalEvent.preventDefault();
+    var file = e.originalEvent.dataTransfer.files[0];
+    // TODO: notify user about the file
+
+    // start transferring
+    eachActiveConnection(function(c, $c) {
+      if (c.label === 'file') {
+        c.send(file);
+        console.log("you sent a file");
+        // TODO add notificantion about sent file
+        //$c.find('.messages').append('<div><span class="file">You sent a file.</span></div>');
+      }
+    });
+    
+  });
+  function doNothing(e){
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  function eachActiveConnection(fn) {
+
+    console.log("connections: " + activeConnections);
+    //console.log("testing "+$scope.users.$local.displayName);
+
+    var checkedIds = {};
+
+    var actives = angular.element('.active').children();
+    console.log(actives);
+    
+    // todo fix
+    //for (var n = 0; n < actives.length; n++) {
+      //console.log("peers i see " + actives[n].attributes.id.nodeValue);      
+      //var peerId = actives[n].attributes.id.nodeValue;
+      //console.log("connections " + peer.connections[peerId] );
+
+      var peerId = $scope.peer_address;
+      if (!checkedIds[peerId]) {
+        var conns = peer.connections[peerId];
+        for (var i = 0, ii = conns.length; i < ii; i += 1) {
+          var conn = conns[i];
+          console.log("this is :"+$(this));
+          fn(conn, $(this));
+        }
+      }
+   
+      checkedIds[peerId] = 1;
+    //}
+  }
 
 
 

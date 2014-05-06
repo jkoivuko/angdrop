@@ -1,12 +1,12 @@
 <div>
-<h2>This is your Drop</h2>
+<h2>Hello <input type=hidden ng-model=pjs value="{{users.$local.id}}"/> <b id="name" peerjs="{{users.$local.id}}">{{ users.$local.displayName }}</b>. This is your Drop!</h2>
 <p>Just share this URL to your friends you want to share files with. <br/> Drag &amp; Drop or Select file to share. </p>
 <p>Currently online in this drop: </p>
 
 <table class="table">
 <tr ng-repeat="user in users | keyFilter | orderBy:'$displayName'">
-   <td class="">
-      <span>{{ user.displayName }}</span>
+   <td class="active">
+      <span id="{{ user.peerjsaddr }}">{{ user.displayName }} peerjs addr: {{ user.peerjsaddr }}</span>
    </td>
 </table>
 
@@ -14,140 +14,10 @@
 <p>Drag file here to send to active connections.</p>
 </div>
 
+<form ng-submit="createConnections()">
+address: <input type="text" ng-model="peer_address"></input>
+<button>connect</button>
+</form>
+
 </div>
-
-<script>
-$(document).ready(function() {
-
-var connectedPeers = {};
-
-// Handle a connection object.
-function connect(c) {
-  // Handle a chat connection.
-  if (c.label === 'chat') {
-    var chatbox = $('<div></div>').addClass('connection').addClass('active').attr('id', c.peer);
-    var header = $('<h1></h1>').html('Chat with <strong>' + c.peer + '</strong>');
-    var messages = $('<div><em>Peer connected.</em></div>').addClass('messages');
-    chatbox.append(header);
-    chatbox.append(messages);
- 
-    // Select connection handler.
-    chatbox.on('click', function() {
-      if ($(this).attr('class').indexOf('active') === -1) {
-        $(this).addClass('active');
-      } else {
-        $(this).removeClass('active');
-      }
-    });
-    $('.filler').hide();
-    $('#connections').append(chatbox);
-
-    c.on('data', function(data) {
-      messages.append('<div><span class="peer">' + c.peer + '</span>: ' + data +
-        '</div>');
-        });
-        c.on('close', function() {
-          alert(c.peer + ' has left the chat.');
-          chatbox.remove();
-          if ($('.connection').length === 0) {
-            $('.filler').show();
-          }
-          delete connectedPeers[c.peer];
-        });
-  } else if (c.label === 'file') {
-    c.on('data', function(data) {
-      // If we're getting a file, create a URL for it.
-      if (data.constructor === ArrayBuffer) {
-        var dataView = new Uint8Array(data);
-        var dataBlob = new Blob([dataView]);
-        var url = window.URL.createObjectURL(dataBlob);
-        $('#' + c.peer).find('.messages').append('<div><span class="file">' +
-            c.peer + ' has sent you a <a target="_blank" href="' + url + '">file</a>.</span></div>');
-      }
-    });
-  }
-  connectedPeers[c.peer] = 1;
-}
-
-//$(document).ready(function() {
-  // Prepare file drop box.
-  var box = $('#box');
-  box.on('dragenter', doNothing);
-  box.on('dragover', doNothing);
-  box.on('drop', function(e){
-    console.log("file dropped");
-    e.originalEvent.preventDefault();
-    var file = e.originalEvent.dataTransfer.files[0];
-    // TODO: notify user about the file
-
-    // start transferring
-    eachActiveConnection(function(c, $c) {
-      if (c.label === 'file') {
-        c.send(file);
-        // TODO FIX
-        console.log("you sent a file");
-
-        $c.find('.messages').append('<div><span class="file">You sent a file.</span></div>');
-      }
-    });
-  });
-  function doNothing(e){
-    e.preventDefault();
-    e.stopPropagation();
-  }
-
-  // Connect to a peer
-  $('#connect').click(function() {
-    // peer id
-    requestedPeer = $('#rid').val();
-    if (!connectedPeers[requestedPeer]) {
-      var f = peer.connect(requestedPeer, { label: 'file', reliable: true });
-      f.on('open', function() {
-        connect(f);
-      });
-      f.on('error', function(err) { alert(err); });
-    }
-    connectedPeers[requestedPeer] = 1;
-  });
-
-  // Close a connection.
-  $('#close').click(function() {
-    eachActiveConnection(function(c) {
-      c.close();
-    });
-  });
-
-  // Goes through each active peer and calls FN on its connections.
-  function eachActiveConnection(fn) {
-    var actives = $('.active');
-    var checkedIds = {};
-    actives.each(function() {
-      var peerId = $(this).attr('id');
-
-      if (!checkedIds[peerId]) {
-        var conns = peer.connections[peerId];
-        for (var i = 0, ii = conns.length; i < ii; i += 1) {
-          var conn = conns[i];
-          fn(conn, $(this));
-        }
-      }
-
-      checkedIds[peerId] = 1;
-    });
-  }
-
-  // Show browser version
-  $('#browsers').text(navigator.userAgent);
-});
-
-// Make sure things clean up properly.
-
-window.onunload = window.onbeforeunload = function(e) {
-  if (!!peer && !peer.destroyed) {
-    peer.destroy();
-  }
-};
-
-</script>
-
 
