@@ -76,38 +76,62 @@ angular.module('angdrop.controllers', [])
   
   
   // TODO add modal to change Guest name if accessing direct link
+  // use: https://github.com/tuhoojabotti/AngularJS-ohjelmointiprojekti-k2014/blob/master/material/aloitusluento.md#flash
   var roomId = $routeParams.dropkey
 
-  // PeerJS
-  //var peer = new Peer({key: '8ca5kfjq662sm7vi'});
-  var peer = new Peer(roomId, {key: '8ca5kfjq662sm7vi',
-  config: {'iceServers': [
-    { url: 'stun:stun.l.google.com:19302' },
-    { url: 'turn:homeo@turn.bistri.com:80', credential: 'homeo' }
-  ]} 
-  });
-
-  peer.on('open', function(id) {
-      console.log('My peerjs ID is: ' + id);
-  });
-  
   $scope.messages = $goKey(roomId).$sync();
 
   // Create a users model and sync it
   $scope.users = $goUsers(roomId).$sync();
+  $scope.users.$self();
 
-  // not needed atm
-  /*$scope.users.$on('ready', function() {
-    // Do something once the user model is synchronized
+
+  var peer;
+ 
+  $scope.users.$on('ready', function() {
+
+   console.log("sync ready users");
+
+   // TODO currently goInstant will give id {guest: xxxxxx} value.
+   var selfid = $scope.users.$local.$key('id').guest;
+
+   console.log("selfid "+selfid);
+   peer = new Peer(selfid, {key: '8ca5kfjq662sm7vi',
+      config: {'iceServers': [
+         { url: 'stun:stun.l.google.com:19302' },
+         { url: 'turn:homeo@turn.bistri.com:80', credential: 'homeo' }
+      ]}
+   });
+
+   console.log("staring peer connection");
+   peer.on('open', function(id) {
+      console.log('My peerjs ID is: ' + id);
+      $scope.users.$local.$key('peerjs_addr').$set(id);
+   });
+   peer.on('error', function(err) {
+     console.log(err)
+   });
+
+
   });
 
+
   $scope.users.$on('join', function(user) {
-    //
+     console.log("user joined with name, "+user.displayName);
+
+     // TODO figure out why this is not showing up?
+     console.log("user joined with peerjs addr, "+user.peerjs_addr);
+
+     // again, we are using latter part of the goInstant id
+     // for not authenticated users. if user is authenticated, this will not work
+     peer.connect(user.id.guest, { label: 'file', reliable: true });
   });
 
   $scope.users.$on('leave', function(user) {
     // Handle a user leaving
-  });*/
+  });
+
+
 
 
 }])
