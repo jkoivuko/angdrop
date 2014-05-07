@@ -1,12 +1,12 @@
 <div>
-<h2>Hello <input type=hidden ng-model=pjs value="{{users.$local.id}}"/> <b id="name" peerjs="{{users.$local.id}}">{{ users.$local.displayName }}</b>. This is your Drop!</h2>
+<h2>Hello <input type=hidden ng-model=pjs value="{{users.$local.id}}"/> <b id="name" peerjs="{{users.$local.id}}">{{ users.$local.displayName }}</b>. Welcome to this drop!</h2>
 <p>Just share this URL to your friends you want to share files with. <br/> Drag &amp; Drop or Select file to share. </p>
 <p>Currently online in this drop: </p>
 
 <table class="table">
-<tr ng-repeat="user in users | keyFilter | orderBy:'$displayName'">
+<tr ng-repeat="user in users | keyFilter | filter:'!'+users.$local.displayName | orderBy:'displayName'">
    <td class="active">
-      <span id="{{ user.peerjsaddr }}">{{ user.displayName }} peerjs addr: {{ user.peerjsaddr }}</span>
+      <input type="checkbox"/ checked value="{{ user.peerjsaddr }}"><span id="{{ user.peerjsaddr }}">{{ user.displayName }} peerjs addr: {{ user.peerjsaddr }} {{ user.id == users.$local.id}}</span>
    </td>
 </table>
 
