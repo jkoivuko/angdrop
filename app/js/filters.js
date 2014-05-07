@@ -12,9 +12,9 @@ angular.module('angdrop.filters', []).
 angular.module('peerjsFilters', []).
   filter('peerjsConnected', function() {
     return function(input) {
-      var arr = $.grep(input, function( element ) {
+      var arr = angular.element.grep(input, function( element ) {
           return (element.peerjsaddr);
-      });
+        });
       return arr;
     };
   });

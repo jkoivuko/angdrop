@@ -19,4 +19,4 @@ config(function($routeProvider, $goConnectionProvider) {
   $routeProvider.otherwise({redirectTo: '/index'});
 
   $goConnectionProvider.$set('https://goinstant.net/b57a53839217/my-application');
-})
+});
