@@ -8,3 +8,15 @@ angular.module('angdrop.filters', []).
       return String(text).replace(/\%VERSION\%/mg, version);
     };
   }]);
+
+angular.module('peerjsFilters', []).
+  filter('peerjsConnected', function() {
+    return function(input) {
+      var arr = $.grep(input, function( element ) {
+          return (element.peerjsaddr);
+      });
+      return arr;
+    };
+  });
+
+

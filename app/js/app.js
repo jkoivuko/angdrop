@@ -8,7 +8,8 @@ angular.module('angdrop', [
   'angdrop.directives',
   'angdrop.controllers',
   'goangular', //goAngular
-  'ngCookies'
+  'ngCookies',
+  'peerjsFilters',
 ]).
 config(function($routeProvider, $goConnectionProvider) {
   $routeProvider.when('/index', {templateUrl: 'partials/index.html', controller: 'MyCtrl1'});

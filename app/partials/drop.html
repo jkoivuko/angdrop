@@ -4,7 +4,7 @@
 <p>Currently online in this drop: </p>
 
 <table class="table">
-<tr ng-repeat="user in users | keyFilter | filter:'!'+users.$local.displayName | orderBy:'displayName'">
+<tr ng-repeat="user in users | keyFilter | filter:'!'+users.$local.displayName | peerjsConnected | orderBy:'displayName'">
    <td class="active">
       <input type="checkbox"/ checked value="{{ user.peerjsaddr }}"><span id="{{ user.peerjsaddr }}">{{ user.displayName }} peerjs addr: {{ user.peerjsaddr }} {{ user.id == users.$local.id}}</span>
    </td>
