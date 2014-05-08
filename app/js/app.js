@@ -10,6 +10,7 @@ angular.module('angdrop', [
   'goangular', //goAngular
   'ngCookies',
   'peerjsFilters',
+  'checklist-model',
 ]).
 config(function($routeProvider, $goConnectionProvider) {
   $routeProvider.when('/index', {templateUrl: 'partials/index.html', controller: 'MyCtrl1'});
