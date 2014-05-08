@@ -132,6 +132,9 @@ angular.module('peerjsServices', []).service('peerjsService', function($window, 
     e.originalEvent.preventDefault();
     var file = e.originalEvent.dataTransfer.files[0];
     // TODO: notify user about the file
+    console.log(file.name);
+    console.log(file.size);
+    console.log(file.type);
 
     // start transferring
     eachActiveConnection(function(c) {
