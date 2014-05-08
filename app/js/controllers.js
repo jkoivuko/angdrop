@@ -92,7 +92,8 @@ angular.module('angdrop.controllers', [])
      Object.keys($scope.users).forEach(function(key) {
        if ($scope.users.hasOwnProperty(key) && key.charAt(0) != "$") {
          //console.log(key, $scope.users[key].peerjsaddr);
-         $scope.conns.push($scope.users[key].peerjsaddr);
+         if ($scope.users[key].peerjsaddr != undefined) // only take if connected to peerjs
+           $scope.conns.push($scope.users[key].peerjsaddr);
        }
      });
      // and finally remove the local user...

@@ -7,7 +7,7 @@
 <table class="table">
 <tr ng-repeat="user in users | keyFilter | filter:'!'+users.$local.displayName | peerjsConnected | orderBy:'displayName'">
    <td class="active">
-      <input type="checkbox"/ checklist-model="conns" checklist-value="user.peerjsaddr" checked>
+      <input type="checkbox"/ checklist-model="conns" checklist-value="user.peerjsaddr">
       &nbsp;<span id="{{ user.peerjsaddr }}">{{ user.displayName }} peerjs addr: {{ user.peerjsaddr }}</span>
    </td>
 </table>
