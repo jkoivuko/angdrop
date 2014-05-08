@@ -1,12 +1,9 @@
 'use strict';
 
-//service style, probably the simplest one
-angular.module('peerjsServices', []).service('peerjsService', function($window) {
-
-  //console.log('hello from peerjs service');
+angular.module('peerjsServices', []).service('peerjsService', function($window, $q) {
 
   var peer;
-  var peerjs;
+  var peerjs_addr;
   var conns;
   var activeConnections = {};
 
@@ -21,7 +18,22 @@ angular.module('peerjsServices', []).service('peerjsService', function($window) 
 
   // service functions
   this.getPeerjsAddr = function() {
-    return peerjs;
+
+    // TODO: try to test this. Currently this works as adding 500msec delay
+    var deferred = $q.defer();
+    setTimeout(function() {
+      deferred.notify('About to get peerjs addr');
+
+      if (peerjs_addr !== undefined) {
+        deferred.resolve(peerjs_addr);
+      } else {
+        console.log('we didnt get peerjs addr in time');
+        deferred.reject(undefined);
+      }
+    }, 500);
+
+    return deferred.promise;
+
   };
   this.getPeerjs = function() {
     return peer;
@@ -68,6 +80,7 @@ angular.module('peerjsServices', []).service('peerjsService', function($window) 
           var dataView = new Uint8Array(data);
           var dataBlob = new Blob([dataView]);
           var url = window.URL.createObjectURL(dataBlob);
+          angular.element('#files_box').show();
           angular.element('#files').append('<tr><td class="active"><span class="file">' + c.peer + ' has sent you a <a target="_blank" href="' + url + '">file</a>.</span></td></tr>');
         }
       });
@@ -100,15 +113,16 @@ angular.module('peerjsServices', []).service('peerjsService', function($window) 
   // events
   peer.on('open', function(id) {
     console.log('My peerjs ID is: ' + id);
-    peerjs = id;
+    peerjs_addr = id;
   });
+
   peer.on('error', function(err) {
     console.log(err);
   });
 
   peer.on('connection', peer_connect);
 
-    // todo change this in to the controller
+  // todo change this in to the controller
   // Prepare file drop box.
   var box = angular.element('#box');
   box.on('dragenter', doNothing);

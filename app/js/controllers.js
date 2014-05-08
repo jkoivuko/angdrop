@@ -12,10 +12,6 @@ angular.module('angdrop.controllers', [])
   $scope.dropkey = Math.floor(Math.random()*Math.pow(10,10)).toString();
 
   $scope.create = function(username, dropkey) {
-    //alert("creating "+username+dropkey);
-    //$cookieStore.put("username", username);
-    //$cookieStore.put("dropkey", dropkey);
-
     // change the name to goInstant also
     // TODO check if room exists
     $scope.users = $goUsers(dropkey).$sync();
@@ -71,8 +67,10 @@ angular.module('angdrop.controllers', [])
   $scope.messages.$on('ready', scrollOn);
 
 }])
-.controller('DropCtrl', ['$cookieStore', '$goKey', '$scope', '$goUsers', '$routeParams', '$window', 'peerjsService',
-  function($cookieStore, $goKey, $scope, $goUsers, $routeParams, $window, peerjsService) {
+.controller('DropCtrl', ['$cookieStore', '$goKey', '$scope', '$goUsers', '$routeParams', 
+                         '$window', 'peerjsService',
+  function($cookieStore, $goKey, $scope, $goUsers, $routeParams, 
+           $window, peerjsService) {
 
   // needed for view and checklist-module
   $scope.conns = [];
@@ -81,6 +79,7 @@ angular.module('angdrop.controllers', [])
   // use: https://github.com/tuhoojabotti/AngularJS-ohjelmointiprojekti-k2014/blob/master/material/aloitusluento.md#flash
   var roomId = $routeParams.dropkey;
 
+  // sync messages from this room
   $scope.messages = $goKey(roomId).$sync();
 
   $scope.users = $goUsers(roomId);
@@ -105,30 +104,37 @@ angular.module('angdrop.controllers', [])
 
   $scope.users.$sync();
 
+  // events
 
-  // sync ready
+  // this event is called when syncin is ready
+  // this however, doesn't mean that $local user is synced
   $scope.users.$on('ready', function() {
 
     // potential and real async problem here.
     // TODO fix that peerjs is always instanted before goInstant
-    var peerjs = peerjsService.getPeerjsAddr();
-    console.log('sync ready users ');
-    console.log('local user has peerjs addr ' + peerjs);
-    $scope.users.$local.$key('peerjsaddr').$set(peerjs);
-    $scope.users.$local.$sync();
+    //var deferred = $q.defer();
+
+    var peerjs_promise = peerjsService.getPeerjsAddr();
+    peerjs_promise.then(function(peerjs_addr) {
+      console.log('sync ready users ');
+      console.log('local user has peerjs addr ' + peerjs_addr);
+      $scope.users.$local.$key('peerjsaddr').$set(peerjs_addr);
+      $scope.users.$local.$sync();
+    }, function(reason) {
+      console.log('reason: '+reason);
+    }, function(update) {
+      console.log('update: '+update);
+    });
 
   });
 
 
   $scope.users.$on('join', function(user) {
-    //$scope.users.$sync();
-    //$scope.users.$on('ready', function() {
 
     console.log('user joined with name, '+user.displayName);
     // TODO figure out why this is not showing up?
     console.log('user joined with peerjs addr, '+user.peerjsaddr);
     console.log('user joined with user.id '+user.id);
-     //});
 
   });
 
