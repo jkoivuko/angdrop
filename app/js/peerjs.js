@@ -68,7 +68,7 @@ angular.module('peerjsServices', []).service('peerjsService', function($window) 
           var dataView = new Uint8Array(data);
           var dataBlob = new Blob([dataView]);
           var url = window.URL.createObjectURL(dataBlob);
-          angular.element('#box').append('<div><span class="file">' + c.peer + ' has sent you a <a target="_blank" href="' + url + '">file</a>.</span></div>');
+          angular.element('#files').append('<tr><td class="active"><span class="file">' + c.peer + ' has sent you a <a target="_blank" href="' + url + '">file</a>.</span></td></tr>');
         }
       });
     }
