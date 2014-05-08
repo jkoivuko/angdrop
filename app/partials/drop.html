@@ -3,21 +3,28 @@
 <p>Just share this URL to your friends you want to share files with. <br/> Drag &amp; Drop or Select file to share. </p>
 <p>Currently online in this drop: </p>
 
+<form ng-submit="createConnections()">
 <table class="table">
 <tr ng-repeat="user in users | keyFilter | filter:'!'+users.$local.displayName | peerjsConnected | orderBy:'displayName'">
    <td class="active">
-      <input type="checkbox"/ checked value="{{ user.peerjsaddr }}"><span id="{{ user.peerjsaddr }}">{{ user.displayName }} peerjs addr: {{ user.peerjsaddr }} {{ user.id == users.$local.id}}</span>
+      <input type="checkbox"/ checklist-model="conns" checklist-value="user.peerjsaddr" checked>
+      &nbsp;<span id="{{ user.peerjsaddr }}">{{ user.displayName }} peerjs addr: {{ user.peerjsaddr }}</span>
    </td>
 </table>
+<button ng-click="checkAll()" type="button">check all</button> <button>connect</button>
+</form>
+<br />
 
 <div id="box" style="background: #f0f0f0; font-size: 18px;padding:40px 30px; text-align: center;">
 <p>Drag file here to send to active connections.</p>
 </div>
 
-<form ng-submit="createConnections()">
+<!-- custom connection disabled for now -->
+<!--<form ng-submit="createConnections()">
 address: <input type="text" ng-model="peer_address"></input>
 <button>connect</button>
 </form>
+-->
 
 </div>
 

@@ -74,6 +74,9 @@ angular.module('angdrop.controllers', [])
 .controller('DropCtrl', ['$cookieStore', '$goKey', '$scope', '$goUsers', '$routeParams', '$window',
   function($cookieStore, $goKey, $scope, $goUsers, $routeParams, $window) {
 
+  // needed for view and checklist-module
+  $scope.conns = [];
+
   // TODO add modal to change Guest name if accessing direct link
   // use: https://github.com/tuhoojabotti/AngularJS-ohjelmointiprojekti-k2014/blob/master/material/aloitusluento.md#flash
   var roomId = $routeParams.dropkey;
@@ -83,6 +86,19 @@ angular.module('angdrop.controllers', [])
   $scope.users = $goUsers(roomId);
   $scope.users.$self();
 
+  // rly, wtf again? I just want the list of users to work with
+  $scope.checkAll = function() {
+     $scope.conns.length = 0; // empty the array, but keep references to it
+     Object.keys($scope.users).forEach(function(key) {
+       if ($scope.users.hasOwnProperty(key) && key.charAt(0) != "$") {
+         //console.log(key, $scope.users[key].peerjsaddr);
+         $scope.conns.push($scope.users[key].peerjsaddr);
+       }
+     });
+     // and finally remove the local user...
+     $scope.conns.splice(angular.element.inArray($scope.users.$local.peerjsaddr, $scope.conns), 1);  
+  };
+
   // add peerjs address
   var peer;
   var activeConnections = {};
@@ -90,7 +106,7 @@ angular.module('angdrop.controllers', [])
   peer = $window.Peer([], {key: '8ca5kfjq662sm7vi',
     config: {'iceServers': [
     { url: 'stun:stun.l.google.com:19302' },
-    { url: 'turn:homeo@turn.bistri.com:80', credential: 'homeo' }
+    //{ url: 'turn:homeo@turn.bistri.com:80', credential: 'homeo' }
   ]}});
 
   var peerjs;
@@ -110,7 +126,7 @@ angular.module('angdrop.controllers', [])
   // sync ready
   $scope.users.$on('ready', function() {
 
-    console.log('sync ready users' + $scope.users.$local.displayName);
+    console.log('sync ready users');
     $scope.users.$local.$key('peerjsaddr').$set(peerjs);
     $scope.users.$local.$sync();
 
@@ -131,19 +147,22 @@ angular.module('angdrop.controllers', [])
 
 
   $scope.createConnections = function() {
-    var peer_address = $scope.peer_address;
-    console.log('connecting to '+$scope.peer_address);
+    console.log('conns is ' + $scope.conns);
 
-    var f = peer.connect($scope.peer_address, { label: 'file', reliable: true });
+    for (var n  = 0; n < $scope.conns.length; n++) {
+      var peer_address = $scope.conns[n];;
+      console.log('connecting to '+peer_address);
 
-    f.on('open', function() {
-      console.log('connecting....');
-      peer_connect(f); // ?
-    });
-    f.on('error', function(err) { console.log(err); });
+      var f = peer.connect(peer_address, { label: 'file', reliable: true });
 
-    activeConnections[peer_address] = 1;
+      f.on('open', function() {
+        console.log('connection in progress.....');
+        peer_connect(f); // ?
+      });
+      f.on('error', function(err) { console.log(err); });
 
+      activeConnections[peer_address] = 1;
+    }
   };
 
   $scope.users.$on('leave', function(user) {
@@ -205,16 +224,17 @@ angular.module('angdrop.controllers', [])
 
     var checkedIds = {};
 
-    var actives = angular.element('.active').children();
+    // selected conns from checklist, we also have internal 
+    // value for this TODO refactor. 
+    var actives = $scope.conns;
     console.log(actives);
 
     // todo fix
-    //for (var n = 0; n < actives.length; n++) {
-      //console.log("peers i see " + actives[n].attributes.id.nodeValue);      
-      //var peerId = actives[n].attributes.id.nodeValue;
-      //console.log("connections " + peer.connections[peerId] );
+    for (var n = 0; n < actives.length; n++) {
+      console.log('peers i see ' + actives[n]);      
+      var peerId = actives[n];
+      console.log("connections " + peer.connections[peerId] );
 
-      var peerId = $scope.peer_address;
       if (!checkedIds[peerId]) {
         var conns = peer.connections[peerId];
         for (var i = 0, ii = conns.length; i < ii; i += 1) {
@@ -225,7 +245,7 @@ angular.module('angdrop.controllers', [])
       }
 
       checkedIds[peerId] = 1;
-    //}
+    }
   }
 
 
