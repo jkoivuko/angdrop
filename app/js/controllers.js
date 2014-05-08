@@ -12,30 +12,30 @@ angular.module('angdrop.controllers', [])
   $scope.dropkey = Math.floor(Math.random()*Math.pow(10,10)).toString();
 
   $scope.create = function(username, dropkey) {
-      //alert("creating "+username+dropkey);
-      //$cookieStore.put("username", username);
-      //$cookieStore.put("dropkey", dropkey);
+    //alert("creating "+username+dropkey);
+    //$cookieStore.put("username", username);
+    //$cookieStore.put("dropkey", dropkey);
 
-      // change the name to goInstant also
-      // TODO check if room exists
-      $scope.users = $goUsers(dropkey).$sync();
-      $scope.users.$self();
+    // change the name to goInstant also
+    // TODO check if room exists
+    $scope.users = $goUsers(dropkey).$sync();
+    $scope.users.$self();
 
-      $scope.users.$on('ready', function() {
+    $scope.users.$on('ready', function() {
 
-        $scope.users.$local.$key('displayName').$set(username);
-        $scope.users.$local.$key('dropkey').$set(dropkey);
+      $scope.users.$local.$key('displayName').$set(username);
+      $scope.users.$local.$key('dropkey').$set(dropkey);
 
-        $location.url('/drop/'+dropkey);
-      });
+      $location.url('/drop/'+dropkey);
+    });
 
-    };
+  };
 
 }])
 .controller('ChatCtrl', ['$cookieStore', '$goKey', '$scope', function($cookieStore, $goKey, $scope) {
   function scrollOn() {
     setTimeout(function() {
-      $('.table-wrapper').scrollTop($('.table-wrapper').children().height());
+      angular.element('.table-wrapper').scrollTop(angular.element('.table-wrapper').children().height());
     }, 0);
   }
 
@@ -88,21 +88,20 @@ angular.module('angdrop.controllers', [])
 
   // rly, wtf again? I just want the list of users to work with
   $scope.checkAll = function() {
-     $scope.conns.length = 0; // empty the array, but keep references to it
-     Object.keys($scope.users).forEach(function(key) {
-       if ($scope.users.hasOwnProperty(key) && key.charAt(0) != "$") {
-         //console.log(key, $scope.users[key].peerjsaddr);
-         if ($scope.users[key].peerjsaddr != undefined) // only take if connected to peerjs
-           $scope.conns.push($scope.users[key].peerjsaddr);
-       }
-     });
-     // and finally remove the local user...
-     $scope.conns.splice(angular.element.inArray($scope.users.$local.peerjsaddr, $scope.conns), 1);  
+    $scope.conns.length = 0; // empty the array, but keep references to it
+    Object.keys($scope.users).forEach(function(key) {
+      if ($scope.users.hasOwnProperty(key) && key.charAt(0) !== '$') {
+      //console.log(key, $scope.users[key].peerjsaddr);
+        if ($scope.users[key].peerjsaddr !== undefined) { // only take if connected to peerjs
+          $scope.conns.push($scope.users[key].peerjsaddr);
+        }
+      }
+    });
+    // and finally remove the local user...
+    $scope.conns.splice(angular.element.inArray($scope.users.$local.peerjsaddr, $scope.conns), 1);
   };
 
-  var peer = peerjsService.getPeerjs();
-
-  $scope.createConnections = function() { peerjsService.createConnections($scope.conns); }
+  $scope.createConnections = function() { peerjsService.createConnections($scope.conns); };
 
   $scope.users.$sync();
 

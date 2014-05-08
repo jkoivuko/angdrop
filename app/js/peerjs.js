@@ -1,3 +1,5 @@
+'use strict';
+
 //service style, probably the simplest one
 angular.module('peerjsServices', []).service('peerjsService', function($window) {
 
@@ -20,21 +22,22 @@ angular.module('peerjsServices', []).service('peerjsService', function($window) 
   // service functions
   this.getPeerjsAddr = function() {
     return peerjs;
-  }
+  };
   this.getPeerjs = function() {
     return peer;
-  }
- 
+  };
+
   this.createConnections = function(connections) {
     console.log('conns is ' + connections);
     conns = connections;
 
     for (var n  = 0; n < conns.length; n++) {
-      var peer_address = conns[n];;
+      var peer_address = conns[n];
       console.log('connecting to '+peer_address);
 
       var f = peer.connect(peer_address, { label: 'file', reliable: true });
 
+      /*jshint -W083 */
       f.on('open', function() {
         console.log('connection in progress.....');
         peer_connect(f); // ?
@@ -47,7 +50,7 @@ angular.module('peerjsServices', []).service('peerjsService', function($window) 
   this.disconnect = function(peer) {
     // TODO check if something else
     delete activeConnections[peer];
-  }
+  };
 
 
   // internal
@@ -78,7 +81,7 @@ angular.module('peerjsServices', []).service('peerjsService', function($window) 
 
     for (var peerId in activeConnections) {
       console.log('peers i see ' + peerId);
-      console.log("connections " + peer.connections[peerId] );
+      console.log('connections ' + peer.connections[peerId] );
 
       if (!checkedIds[peerId]) {
         var conns = peer.connections[peerId];
@@ -91,7 +94,7 @@ angular.module('peerjsServices', []).service('peerjsService', function($window) 
 
       checkedIds[peerId] = 1;
     }
-  }
+  };
 
 
   // events
@@ -117,7 +120,7 @@ angular.module('peerjsServices', []).service('peerjsService', function($window) 
     // TODO: notify user about the file
 
     // start transferring
-    eachActiveConnection(function(c, $c) {
+    eachActiveConnection(function(c) {
       if (c.label === 'file') {
         c.send(file);
         console.log('you sent a file');
