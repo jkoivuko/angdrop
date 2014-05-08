@@ -74,9 +74,11 @@ angular.module('angdrop.controllers', [])
 
   // needed for view and checklist-module
   $scope.conns = [];
+  $scope.displayName = "";
 
   // TODO add modal to change Guest name if accessing direct link
   // use: https://github.com/tuhoojabotti/AngularJS-ohjelmointiprojekti-k2014/blob/master/material/aloitusluento.md#flash
+
   var roomId = $routeParams.dropkey;
 
   // sync messages from this room
@@ -112,7 +114,6 @@ angular.module('angdrop.controllers', [])
 
     // potential and real async problem here.
     // TODO fix that peerjs is always instanted before goInstant
-    //var deferred = $q.defer();
 
     var peerjs_promise = peerjsService.getPeerjsAddr();
     peerjs_promise.then(function(peerjs_addr) {
@@ -120,6 +121,7 @@ angular.module('angdrop.controllers', [])
       console.log('local user has peerjs addr ' + peerjs_addr);
       $scope.users.$local.$key('peerjsaddr').$set(peerjs_addr);
       $scope.users.$local.$sync();
+      $scope.displayName = $scope.users.$local.displayName;
     }, function(reason) {
       console.log('reason: '+reason);
     }, function(update) {
@@ -144,6 +146,9 @@ angular.module('angdrop.controllers', [])
 
   });
 
+  angular.element('#name').focusout(function() {
+    $scope.users.$local.$key('displayName').$set($scope.displayName);
+  });
 
 }]);
 
