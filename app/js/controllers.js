@@ -2,7 +2,7 @@
 
 /* Controllers */
 
-angular.module('angdrop.controllers', [])
+var app = angular.module('angdrop.controllers', [])
   .controller('MyCtrl1', [function() {
 
 }]) // location and scope needs to be as parameters 
@@ -75,7 +75,7 @@ angular.module('angdrop.controllers', [])
   // needed for view and checklist-module
   $scope.conns = [];
   $scope.displayName = "";
-
+  $scope.tip = "You can change your nick by clicking it on the right.";
   // TODO add modal to change Guest name if accessing direct link
   // use: https://github.com/tuhoojabotti/AngularJS-ohjelmointiprojekti-k2014/blob/master/material/aloitusluento.md#flash
 
@@ -152,3 +152,13 @@ angular.module('angdrop.controllers', [])
 
 }]);
 
+app.directive('flash', function() {
+  return {
+    restrict: 'AE',
+    //template: "<div class='alert alert-success'>Moro</div>"
+    templateUrl: 'partials/flash.html',
+    scope: {
+      message: '='
+    }
+  }
+});
