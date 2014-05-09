@@ -1,17 +1,21 @@
 <div class="container">
-<h2>Create new Drop</h2>
+  <div class="page-header">
+    <h2>Create new Drop</h2>
+  </div>
 <p>Choose random identifier or click create to create with random one<p>
 
-<form name="myForm">
-    Your Name: <input type="text" name="userName" ng-model="username" required>
+<form name="myForm" class="form">
+    <label for="username" class="col-md-2">Your Name</label>
+    <input type="text" id="username" name="userName" ng-model="username" required>
     <span class="error" ng-show="myForm.userName.$error.required">Required!</span><br>
-    Random identifier: <input type="text" name="dropkey" ng-model="dropkey"
+    <label for="randomid" class="col-md-2">Random identifier</label>
+    <input type="text" id="randomid" name="dropkey" ng-model="dropkey"
       ng-minlength="3" ng-maxlength="250">
     <span class="error" ng-show="myForm.dropkey.$error.minlength">
       Too short!</span>
     <span class="error" ng-show="myForm.dropkey.$error.maxlength">
       Too long!</span><br>
-    <button ng-click="create(username, dropkey)">CREATE</button>
+    <button type="submit" ng-click="create(username, dropkey)" class="btn btn-primary">CREATE</button>
 </form>
 
 
