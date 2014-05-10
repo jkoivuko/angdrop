@@ -75,6 +75,7 @@ angular.module('angdrop.controllers', [])
   // needed for view and checklist-module
   $scope.conns = [];
   $scope.displayName = "";
+  $scope.activeConnections = {};
 
   // TODO add modal to change Guest name if accessing direct link
   // use: https://github.com/tuhoojabotti/AngularJS-ohjelmointiprojekti-k2014/blob/master/material/aloitusluento.md#flash
@@ -102,7 +103,7 @@ angular.module('angdrop.controllers', [])
     $scope.conns.splice(angular.element.inArray($scope.users.$local.peerjsaddr, $scope.conns), 1);
   };
 
-  $scope.createConnections = function() { peerjsService.createConnections($scope.conns); };
+  $scope.createConnections = function() { $scope.activeConnections = peerjsService.createConnections($scope.conns); };
 
   $scope.users.$sync();
 

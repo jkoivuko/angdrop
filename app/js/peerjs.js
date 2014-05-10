@@ -30,7 +30,7 @@ angular.module('peerjsServices', []).service('peerjsService', function($window, 
         console.log('we didnt get peerjs addr in time');
         deferred.reject(undefined);
       }
-    }, 500);
+    }, 1500);
 
     return deferred.promise;
 
@@ -58,6 +58,7 @@ angular.module('peerjsServices', []).service('peerjsService', function($window, 
 
       activeConnections[peer_address] = 1;
     }
+    return activeConnections;
   };
   this.disconnect = function(peer) {
     // TODO check if something else

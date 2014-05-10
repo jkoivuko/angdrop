@@ -10,6 +10,7 @@
    <td class="active">
       <input type="checkbox"/ checklist-model="conns" checklist-value="user.peerjsaddr">
       &nbsp;<span id="{{ user.peerjsaddr }}">{{ user.displayName }} peerjs addr: {{ user.peerjsaddr }}</span>
+      &nbsp;<span class="label label-success glyphicon glyphicon-ok" ng-if="activeConnections[user.peerjsaddr]">connected</span>
    </td>
 </table>
 <button ng-click="checkAll()" type="button">check all</button> <button>connect</button>
