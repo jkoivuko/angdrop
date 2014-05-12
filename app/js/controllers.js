@@ -6,7 +6,7 @@ var app = angular.module('angdrop.controllers', [])
   .controller('MyCtrl1', [function() {
 
 }]) // location and scope needs to be as parameters 
-  .controller('MyCtrl2', ['$goUsers', '$cookieStore', '$location', '$scope', function($goUsers, $cookieStore, $location, $scope) {
+  .controller('MyCtrl2', ['$goUsers', '$location', '$scope', function($goUsers, $location, $scope) {
 
   $scope.username = 'Guest ' + Math.floor(Math.random()*1000);
   $scope.dropkey = Math.floor(Math.random()*Math.pow(10,10)).toString();
@@ -28,17 +28,14 @@ var app = angular.module('angdrop.controllers', [])
   };
 
 }])
-.controller('ChatCtrl', ['$cookieStore', '$goKey', '$scope', function($cookieStore, $goKey, $scope) {
+.controller('ChatCtrl', ['$goKey', '$scope', function($goKey, $scope) {
   function scrollOn() {
     setTimeout(function() {
       angular.element('.table-wrapper').scrollTop(angular.element('.table-wrapper').children().height());
     }, 0);
   }
 
-
-  // 'chat' is the key for this chat in goInstance db
   $scope.messages = $goKey('chat').$sync();
-  //alert($cookieStore.get("dropkey"));
 
   $scope.messages.$on('add', {
     local: true,
@@ -67,17 +64,15 @@ var app = angular.module('angdrop.controllers', [])
   $scope.messages.$on('ready', scrollOn);
 
 }])
-.controller('DropCtrl', ['$cookieStore', '$goKey', '$scope', '$goUsers', '$routeParams', 
-                         '$window', 'peerjsService', '$timeout',
-  function($cookieStore, $goKey, $scope, $goUsers, $routeParams, 
-           $window, peerjsService, $timeout) {
+.controller('DropCtrl', ['$goKey', '$scope', '$goUsers', '$routeParams', 
+                         'peerjsService', '$timeout',
+  function($goKey, $scope, $goUsers, $routeParams, 
+           peerjsService, $timeout) {
 
   // needed for view and checklist-module
   $scope.conns = [];
   $scope.displayName = "";
   $scope.content;
-  // TODO add modal to change Guest name if accessing direct link
-  // use: https://github.com/tuhoojabotti/AngularJS-ohjelmointiprojekti-k2014/blob/master/material/aloitusluento.md#flash
 
   var roomId = $routeParams.dropkey;
   // Sync chat messages
@@ -172,20 +167,3 @@ var app = angular.module('angdrop.controllers', [])
   $scope.flasher("Hello, you can change your nick by clicking it on the right.", "info");
 }]);
 
-app.directive('flash', function($timeout) {
-  return {
-    restrict: 'AE',
-    replace: true,
-    templateUrl: 'partials/flash.html',
-    scope: {
-      msg: '=',
-      type: '='
-    }, 
-    link: function(scope, elem, attrs) {
-      attrs['type'] ? elem.addClass('alert-'+attrs['type']) : elem.addClass('alert-success');
-      $timeout(function() {
-        scope.msg=null;
-      }, 5000);
-    }
-  }
-});
