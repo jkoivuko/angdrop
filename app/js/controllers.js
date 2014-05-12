@@ -133,6 +133,7 @@ var app = angular.module('angdrop.controllers', [])
   $scope.users.$on('join', function(user) {
 
     console.log('user joined with name, '+user.displayName);
+    $scope.flasher('user joined with name, '+user.displayName, 'success');
     // TODO figure out why this is not showing up?
     console.log('user joined with peerjs addr, '+user.peerjsaddr);
     console.log('user joined with user.id '+user.id);
