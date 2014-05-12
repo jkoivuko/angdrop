@@ -103,7 +103,7 @@ var app = angular.module('angdrop.controllers', [])
     $scope.conns.splice(angular.element.inArray($scope.users.$local.peerjsaddr, $scope.conns), 1);
   };
 
-  $scope.createConnections = function() { peerjsService.createConnections($scope.conns); };
+  $scope.createConnections = function() { $scope.activeConnections = peerjsService.createConnections($scope.conns); };
 
   $scope.users.$sync();
 

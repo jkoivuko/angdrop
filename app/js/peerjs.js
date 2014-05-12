@@ -30,7 +30,7 @@ angular.module('peerjsServices', []).service('peerjsService', function($window, 
         console.log('we didnt get peerjs addr in time');
         deferred.reject(undefined);
       }
-    }, 500);
+    }, 1500);
 
     return deferred.promise;
 
@@ -56,8 +56,9 @@ angular.module('peerjsServices', []).service('peerjsService', function($window, 
       });
       f.on('error', function(err) { console.log(err); });
 
-      activeConnections[peer_address] = 1;
+      activeConnections[peer_address] = f;
     }
+    return activeConnections;
   };
   this.disconnect = function(peer) {
     // TODO check if something else
@@ -89,24 +90,11 @@ angular.module('peerjsServices', []).service('peerjsService', function($window, 
 
   var eachActiveConnection = function (fn) {
 
-    console.log('connections: ' + activeConnections);
-    var checkedIds = {};
-
     for (var peerId in activeConnections) {
-      console.log('peers i see ' + peerId);
-      console.log('connections ' + peer.connections[peerId] );
-
-      if (!checkedIds[peerId]) {
-        var conns = peer.connections[peerId];
-        for (var i = 0, ii = conns.length; i < ii; i += 1) {
-          var conn = conns[i];
-          console.log('this is :'+angular.element(this)); // changed $(this)
-          fn(conn, angular.element(this));
-        }
-      }
-
-      checkedIds[peerId] = 1;
+      var conn = activeConnections[peerId];
+      fn(conn, angular.element(this));
     }
+
   };
 
 
