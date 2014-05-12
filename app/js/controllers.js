@@ -75,7 +75,8 @@ var app = angular.module('angdrop.controllers', [])
   // needed for view and checklist-module
   $scope.conns = [];
   $scope.displayName = "";
-  $scope.tip = "You can change your nick by clicking it on the right.";
+  $scope.msg = "Hello, you can change your nick by clicking it on the right.";
+  $scope.type = "info";
   // TODO add modal to change Guest name if accessing direct link
   // use: https://github.com/tuhoojabotti/AngularJS-ohjelmointiprojekti-k2014/blob/master/material/aloitusluento.md#flash
 
@@ -152,13 +153,20 @@ var app = angular.module('angdrop.controllers', [])
 
 }]);
 
-app.directive('flash', function() {
+app.directive('flash', function($timeout) {
   return {
     restrict: 'AE',
-    //template: "<div class='alert alert-success'>Moro</div>"
+    replace: true,
     templateUrl: 'partials/flash.html',
     scope: {
-      message: '='
+      msg: '=',
+      type: '='
+    }, 
+    link: function(scope, elem, attrs) {
+      attrs['type'] ? elem.addClass('alert-'+attrs['type']) : elem.addClass('alert-success');
+      $timeout(function() {
+        scope.msg=null;
+      }, 5000);
     }
   }
 });

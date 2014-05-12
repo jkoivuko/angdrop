@@ -1,4 +1,4 @@
-<div ng-show="message" class="alert alert-success">
-  {{message}}
-  <span style="float:right" ng-click="message=null" class="glyphicon glyphicon-remove-sign"></span>
+<div class='alert alert-{{type}} ' ng-show='msg'>
+  {{ msg }}
+  <span style="float:right" ng-click="msg=null" class="glyphicon glyphicon-remove-sign"></span>
 </div>
