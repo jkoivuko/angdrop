@@ -17,6 +17,12 @@ configure your PeerJS and GoInstant account OR use our secret keys which are in 
 npm start
 ```
 
+Build
+-----
+``
+grunt
+``
+
 Notes
 -----
 - To host your own version of this, you need GoInstant (GoAngular) account and PeerJS account. 
