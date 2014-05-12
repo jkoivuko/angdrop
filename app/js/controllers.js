@@ -68,15 +68,13 @@ var app = angular.module('angdrop.controllers', [])
 
 }])
 .controller('DropCtrl', ['$cookieStore', '$goKey', '$scope', '$goUsers', '$routeParams', 
-                         '$window', 'peerjsService',
+                         '$window', 'peerjsService', '$timeout',
   function($cookieStore, $goKey, $scope, $goUsers, $routeParams, 
-           $window, peerjsService) {
+           $window, peerjsService, $timeout) {
 
   // needed for view and checklist-module
   $scope.conns = [];
   $scope.displayName = "";
-  $scope.msg = "Hello, you can change your nick by clicking it on the right.";
-  $scope.type = "info";
   // TODO add modal to change Guest name if accessing direct link
   // use: https://github.com/tuhoojabotti/AngularJS-ohjelmointiprojekti-k2014/blob/master/material/aloitusluento.md#flash
 
@@ -150,7 +148,16 @@ var app = angular.module('angdrop.controllers', [])
   angular.element('#name').focusout(function() {
     $scope.users.$local.$key('displayName').$set($scope.displayName);
   });
-
+  
+  $scope.flasher = function(m, t) {
+    $scope.msg = m;
+    $scope.type= t;
+    $timeout.cancel($scope.timer);
+    $scope.timer = $timeout(function() {
+      $scope.msg = null;
+    }, 5000);
+  }
+  $scope.flasher("Hello, you can change your nick by clicking it on the right.", "info");
 }]);
 
 app.directive('flash', function($timeout) {
