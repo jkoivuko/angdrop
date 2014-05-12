@@ -2,7 +2,7 @@
 
 /* Controllers */
 
-var app = angular.module('angdrop.controllers', [])
+angular.module('angdrop.controllers', [])
   .controller('MyCtrl1', [function() {
 
 }]) // location and scope needs to be as parameters 
@@ -64,15 +64,15 @@ var app = angular.module('angdrop.controllers', [])
   $scope.messages.$on('ready', scrollOn);
 
 }])
-.controller('DropCtrl', ['$goKey', '$scope', '$goUsers', '$routeParams', 
+.controller('DropCtrl', ['$goKey', '$scope', '$goUsers', '$routeParams',
                          'peerjsService', '$timeout',
-  function($goKey, $scope, $goUsers, $routeParams, 
+  function($goKey, $scope, $goUsers, $routeParams,
            peerjsService, $timeout) {
 
   // needed for view and checklist-module
   $scope.conns = [];
-  $scope.displayName = "";
-  $scope.content;
+  $scope.displayName = '';
+  $scope.content = '';
 
   var roomId = $routeParams.dropkey;
   // Sync chat messages
@@ -145,16 +145,16 @@ var app = angular.module('angdrop.controllers', [])
   angular.element('#name').focusout(function() {
     $scope.users.$local.$key('displayName').$set($scope.displayName);
   });
- 
+
   $scope.sendMessage = function() {
     var message = {
       content: $scope.content,
       author: $scope.displayName
-    }
+    };
     $scope.chat.$add(message).then(function() {
       $scope.content = '';
     });
-  }
+  };
 
   $scope.flasher = function(m, t) {
     $scope.msg = m;
@@ -163,7 +163,7 @@ var app = angular.module('angdrop.controllers', [])
     $scope.timer = $timeout(function() {
       $scope.msg = null;
     }, 5000);
-  }
-  $scope.flasher("Hello, you can change your nick by clicking it on the right.", "info");
+  };
+  $scope.flasher('Hello, you can change your nick by clicking it on the right.', 'info');
 }]);
 

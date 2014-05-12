@@ -19,11 +19,15 @@ angular.module('angdrop.directives', []).
       type: '='
     },
     link: function(scope, elem, attrs) {
-      attrs['type'] ? elem.addClass('alert-'+attrs['type']) : elem.addClass('alert-success');
+      if ( attrs.type !== undefined) {
+        elem.addClass('alert-'+attrs.type);
+      } else {
+        elem.addClass('alert-success');
+      }
       $timeout(function() {
         scope.msg=null;
       }, 5000);
     }
-  }
+  };
 });
 
