@@ -75,14 +75,15 @@ var app = angular.module('angdrop.controllers', [])
   // needed for view and checklist-module
   $scope.conns = [];
   $scope.displayName = "";
+  $scope.content;
   // TODO add modal to change Guest name if accessing direct link
   // use: https://github.com/tuhoojabotti/AngularJS-ohjelmointiprojekti-k2014/blob/master/material/aloitusluento.md#flash
 
   var roomId = $routeParams.dropkey;
-
+  // Sync chat messages
+  $scope.chat = $goKey('chat').$sync();
   // sync messages from this room
   $scope.messages = $goKey(roomId).$sync();
-
   $scope.users = $goUsers(roomId);
   $scope.users.$self();
 
@@ -133,7 +134,7 @@ var app = angular.module('angdrop.controllers', [])
   $scope.users.$on('join', function(user) {
 
     console.log('user joined with name, '+user.displayName);
-    $scope.flasher('user joined with name, '+user.displayName, 'success');
+    $scope.flasher('User joined with name, '+user.displayName, 'success');
     // TODO figure out why this is not showing up?
     console.log('user joined with peerjs addr, '+user.peerjsaddr);
     console.log('user joined with user.id '+user.id);
@@ -149,7 +150,17 @@ var app = angular.module('angdrop.controllers', [])
   angular.element('#name').focusout(function() {
     $scope.users.$local.$key('displayName').$set($scope.displayName);
   });
-  
+ 
+  $scope.sendMessage = function() {
+    var message = {
+      content: $scope.content,
+      author: $scope.displayName
+    }
+    $scope.chat.$add(message).then(function() {
+      $scope.content = '';
+    });
+  }
+
   $scope.flasher = function(m, t) {
     $scope.msg = m;
     $scope.type= t;

@@ -1,6 +1,6 @@
 <div class="container">
   <flash msg="msg" type='type'></flash>
-<div class="namebox"><h2>Hello, <input id="name" ng-model="displayName" class="nameinput"></h2></div>
+  <div class="namebox"><h2>Hello, <input id="name" ng-model="displayName" class="nameinput"></h2></div>
 <h2>Welcome to this drop!</h2>
 <p>Just share this URL to your friends you want to share files with. <br/> Drag &amp; Drop or Select file to share. </p>
 <p>Currently online in this drop: </p>
@@ -28,6 +28,14 @@
 </table>
 </div>
 
+<div class="well">
+  <form ng-submit="sendMessage()">
+    <input ng-model="content" class="col-sm-6">
+    <button type="submit" class="btn btn-primary btn-xs">Lähetä</button>
+  </form>
+  <hr/>
+  <p ng-repeat="msg in chat | keyFilter | orderBy:'-$name'| limitTo: 5">{{msg.author}}: {{msg.content}}</p>
+</div>
 <!-- custom connection disabled for now -->
 <!--<form ng-submit="createConnections()">
 address: <input type="text" ng-model="peer_address"></input>
