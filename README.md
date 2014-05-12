@@ -20,7 +20,7 @@ npm start
 Notes
 -----
 - To host your own version of this, you need GoInstant (GoAngular) account and PeerJS account. 
-- TODO: Sharing works currently between only with same browser families. 
+- Sharing works currently between Firefox and Chrome (latest versions tested)
 
 Links
 -----
@@ -32,3 +32,6 @@ Live Demo
 -----
 
 - http://coders.fi:8000/app/#/index
+
+Use incognitio mode to open another client to test peer-to-peer connectivity and file sharing.
+You need to establish connections manually by clicking "connect" button after selecting peer you want to connect.
